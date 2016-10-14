@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.usjr.finalsexam.R;
 import com.usjr.finalsexam.adapters.VideoListAdapter;
@@ -22,13 +23,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private VideoListAdapter mAdapter;
     private ProgressBar      mProgressBar;
     private VideosController mController;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        this.listView = (ListView) findViewById(R.id.listView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mController = new VideosController();
@@ -55,14 +57,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void displayListOfVideos() {
         // TODO: Implement this method
+        showProgressBar();
+        List<Video> list;
+
+        list = VideoTable.getAllVideos(getBaseContext());
+        Toast.makeText(this, list.get(0).toString(), Toast.LENGTH_SHORT).show();
+//        this.listView = (ListView) findViewById(R.id.listView);
+//
+//        mAdapter = new VideoListAdapter(this, list);
+//        listView.setAdapter(mAdapter);
+
+        mAdapter.notifyDataSetChanged();
+        hideProgressBar();
     }
 
     public void showProgressBar() {
         // TODO: Implement this method
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void hideProgressBar() {
         // TODO: Implement this method
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

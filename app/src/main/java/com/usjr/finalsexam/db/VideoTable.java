@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.widget.Toast;
 
 import com.usjr.finalsexam.entity.Video;
 
@@ -52,7 +53,12 @@ public class VideoTable {
 
     private static Video createVideoFromCursor(Cursor cursor) {
         // TODO: Implement this method
-        return null;
+        String id = cursor.getString(cursor.getColumnIndex(VideoEntry._ID));
+        String title = cursor.getString(cursor.getColumnIndex(VideoEntry.COL_DESCRIPTION));
+        String description = cursor.getString(cursor.getColumnIndex(VideoEntry.COL_DESCRIPTION));
+        String thumbnail = cursor.getString(cursor.getColumnIndex(VideoEntry.COL_THUMBNAIL_URL));
+        Video vid = new Video(id,title,description,thumbnail);
+        return vid;
     }
 
     public static long insertVideo(Context context, Video video) {
@@ -124,8 +130,16 @@ public class VideoTable {
 
         try {
             // TODO: Implement retrieval of all video items from the database
+            db = DbHandler.getInstance(context).getReadableDatabase();
+            cursor = db.rawQuery(SELECT_QUERY, null);
+            if (cursor.moveToFirst()){
+                while(cursor.moveToNext()){
+                    videos.add(createVideoFromCursor(cursor));
+                };
+            }
+            Toast.makeText(context, "Retrieved Data", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
             if (db != null) {
                 db.close();
